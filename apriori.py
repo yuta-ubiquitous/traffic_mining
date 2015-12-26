@@ -32,11 +32,11 @@ if __name__ == "__main__":
 	set_data = sorted(set_data)
 	
 	print "N :",N,"set_num :",len(set_data),"minsup :",minsup
+	print "make C_0"
 	C_0 = {}
 	for item in set_data:
 		C_0[item] = 0
-	
-	print "count up items"
+		
 	for T in item_data:
 		for one_set in set_data:
 			if one_set in T:
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 		F_kp1 = []
 		for i, c in enumerate(C_kp1):
 			
-			log_c = "C_" + str(k+1) + " " + str(i) + "/" + str(len(C_kp1))
+			log_c = "C_" + str(k+1) + " " + str(i) + "/" + str(len(C_kp1) - 1)
 			sys.stdout.write("\r" + log_c)
 			sys.stdout.flush()
 			
