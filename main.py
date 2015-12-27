@@ -188,12 +188,12 @@ if __name__ == "__main__":
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
 		
-		'''
+		
 		print data[u"id"],
 		for i in item_list:
 			print i,
 		print ""
-		'''
+		
 		
 		item_dict["items"] = item_list
 	
