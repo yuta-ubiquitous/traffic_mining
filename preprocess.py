@@ -2,6 +2,7 @@
 
 import os
 import codecs
+import json
 
 # MAX_ROW = 8870
 MAX_ROW = 0
@@ -10,15 +11,16 @@ if __name__ == "__main__":
 
 	print "start traffic_mining"
 	
-	h24 = codecs.open("data/h24.csv", "r", "utf-8")
-	h25 = codecs.open("data/h25.csv", "r", "utf-8")
-	h26 = codecs.open("data/h26.csv", "r", "utf-8")
+	h24 = codecs.open("traffic_data/h24.csv", "r", "utf-8")
+	h25 = codecs.open("traffic_data/h25.csv", "r", "utf-8")
+	h26 = codecs.open("traffic_data/h26.csv", "r", "utf-8")
 	
-	f = [h24, h25, h26]
+	f = [h24,h25,h26]
 	
 	row_counter = 0
 	row_label = []
 	dict_list = []
+	output_dict = []
 	
 	for hxx in f:
 		isThrough = False
@@ -30,7 +32,7 @@ if __name__ == "__main__":
 				isThrough = True
 			else:
 				dict = {}
-				dict[u"id"] = row_counter
+				dict["id"] = row_counter
 				for key, value in zip( row_label, row.split(",") ):
 					dict[key.replace("\r\n", "")] = value.replace("\r\n", "")
 				dict_list.append(dict)
@@ -43,10 +45,13 @@ if __name__ == "__main__":
 	
 	for data in dict_list:
 		item_dict = {}
+		
+		item_dict["id"] = data["id"]
 		item_dict["latitude"] = float(data[u"地点緯度"])
-		item_dict["longitude"] = float(data[u"地点緯度"])
+		item_dict["longitude"] = float(data[u"地点経度"])
+		
 		if(item_dict["latitude"] == 0 or item_dict["longitude"] == 0):
-			print "id " + str( data[u"id"] ) + " : detect null position item"
+			print "id " + str( data["id"] ) + " : detect null position item"
 			continue
 		
 		item_list = []
@@ -187,6 +192,7 @@ if __name__ == "__main__":
 		key = u"２当進行方向"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
+<<<<<<< HEAD:main.py
 		
 		
 		print data[u"id"],
@@ -195,9 +201,17 @@ if __name__ == "__main__":
 		print ""
 		
 		
+=======
+				
+>>>>>>> 130e9089d8ed29bbbaf8fc023b20f57bd5bd587f:preprocess.py
 		item_dict["items"] = item_list
+		
+		# add preprocess data
+		output_dict.append(item_dict)
 	
-	for hxx in f:
-		hxx.close()
+	# output preprocess data to json file
+	output_json = codecs.open("./traffic_data/trafic_data.json", "w", "utf-8")
+	json.dump(output_dict, output_json, indent = 4, ensure_ascii = False)
+	output_json.close()
 	
 	print "finish!!"
