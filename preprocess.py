@@ -192,18 +192,14 @@ if __name__ == "__main__":
 		key = u"２当進行方向"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
-<<<<<<< HEAD:main.py
-		
-		
+			
+		'''
 		print data[u"id"],
 		for i in item_list:
 			print i,
 		print ""
+		'''
 		
-		
-=======
-				
->>>>>>> 130e9089d8ed29bbbaf8fc023b20f57bd5bd587f:preprocess.py
 		item_dict["items"] = item_list
 		
 		# add preprocess data
