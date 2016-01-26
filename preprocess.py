@@ -3,6 +3,7 @@
 import os
 import codecs
 import json
+import sys
 
 # MAX_ROW = 8870
 MAX_ROW = 0
@@ -44,6 +45,9 @@ if __name__ == "__main__":
 				break
 	
 	for data in dict_list:
+		sys.stdout.write("\r" + str(data[u"id"]))
+		sys.stdout.flush()
+		
 		item_dict = {}
 		
 		item_dict["id"] = data["id"]
@@ -51,7 +55,7 @@ if __name__ == "__main__":
 		item_dict["longitude"] = float(data[u"地点経度"])
 		
 		if(item_dict["latitude"] == 0 or item_dict["longitude"] == 0):
-			print "id " + str( data["id"] ) + " : detect null position item"
+			print "\n" + "id " + str( data["id"] ) + " : detect null position item"
 			continue
 		
 		item_list = []
@@ -205,7 +209,10 @@ if __name__ == "__main__":
 		# add preprocess data
 		output_dict.append(item_dict)
 	
+	print ""
+	
 	# output preprocess data to json file
+	print "writing data"
 	output_json = codecs.open("./traffic_data/trafic_data.json", "w", "utf-8")
 	json.dump(output_dict, output_json, indent = 4, ensure_ascii = False)
 	output_json.close()
