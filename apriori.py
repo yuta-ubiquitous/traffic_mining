@@ -3,13 +3,15 @@
 import json
 import codecs
 import sys
+import itertools
 
 if __name__ == "__main__":
 	
 	print("start apriori mining")
 	
 	N = None
-	minsup = 0.5
+	minsup = 0.87
+	minconf = 0.6
 	
 	f = codecs.open('./traffic_data/trafic_data.json','r','utf-8')
 	data = json.load(f)
@@ -22,6 +24,7 @@ if __name__ == "__main__":
 		item_data.append( d[u"items"] )
 	
 	# item_data = [["b","c","d"],["a","b"],["a","d","e"],["b","c","d"],["b","d"]]
+	# N = 5.
 	
 	print "make set file"
 	set_data = set()
@@ -31,7 +34,7 @@ if __name__ == "__main__":
 	
 	set_data = sorted(set_data)
 	
-	print "N :",N,"set_num :",len(set_data),"minsup :",minsup
+	print "N :",N,"set_num :",len(set_data),"minsup :",minsup,"minconf :",minconf
 	print "make C_0"
 	C_0 = {}
 	for item in set_data:
@@ -53,6 +56,7 @@ if __name__ == "__main__":
 	for one_set in set_data:
 		if(C_0[one_set]/N >= minsup):
 			F_0.append([one_set])
+	
 	# print F_0
 	
 	F_k.append(F_0)
@@ -99,11 +103,69 @@ if __name__ == "__main__":
 			F_k.append(F_kp1)
 			
 	print "frequent patterns"
+	
+	freq_dict = {}
+	
 	num = 0
 	for F in F_k:
 		for f in F:
 			num += 1
-			for f_item in f:
-				print f_item,
-			print ""
-	print str(num),"patterns"		
+			all_count = 0
+			for T in item_data:
+				t_count = 0
+				for f_item in f:
+					if(f_item in T):
+						t_count += 1
+				if(t_count == len(f)):
+					all_count += 1
+			
+			# for f_item in f:
+			# 	print f_item,
+			# print " " + str(all_count)
+			
+			freq_dict.update({tuple(sorted(f)):all_count})
+			
+	print str(num),"patterns"
+	
+	# print freq_dict
+	
+	# confidense
+	conf_dict = []
+	
+	for i, F in enumerate(F_k):
+		#if(i + 1 == 2):
+		#	for f in F:
+		#		supX = float( freq_dict[tuple([f[0]])] )
+		#		confXY = freq_dict[tuple(f)] / supX
+		#		if(confXY >= minconf):
+		#			conf_dict.append({"X":f[0], "Y":f[1], "support":supX, "confidense":confXY})
+		#		
+		#		supY = float( freq_dict[tuple([f[1]])] )
+		#		confYX = freq_dict[tuple(f)] / supY
+		#		if(confYX >= minconf):
+		#			conf_dict.append({"X":f[0], "Y":f[1], "sup":supY, "conf":confYX})
+		
+		if(i + 1 >= 2):
+			for f in F:
+				k = i + 1
+				for j in range(1, k):
+					for X in list(itertools.combinations(f, j) ):
+						Y = []
+						for item_y in f:
+							if(item_y not in X):
+								Y.append(item_y)
+						X = tuple( sorted(X) )
+						Y = tuple( sorted(Y) )
+						supX = float( freq_dict[X] )
+						confXY = freq_dict[ tuple( sorted(f) ) ] / supX
+						
+						if(confXY >= minconf):
+							conf_dict.append({"X":list(X), "Y":list(Y), "support":supX/N, "confidence":confXY})
+		
+	print str( len(conf_dict) ) + " rules"
+	print "writing data"
+	output_json = codecs.open("./traffic_data/trafic_data_rules.json", "w", "utf-8")
+	json.dump(conf_dict, output_json, indent = 4, ensure_ascii = False)
+	output_json.close()
+	
+	print "finish!!"
