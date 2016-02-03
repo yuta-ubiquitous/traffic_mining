@@ -34,7 +34,7 @@ if __name__ == "__main__":
 	
 	file_name = "trafic_data_sub"
 	minsup = 0.3
-	minconf = 0.5
+	minconf = 0.3
 	intersection_range = 100.0 #[m]
 	
 	input_file = "./traffic_data/" + file_name + ".json"
