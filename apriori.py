@@ -1,31 +1,13 @@
 #-*- coding:utf-8 -*-
 
-import json
-import codecs
 import sys
 import itertools
 
-if __name__ == "__main__":
-	
+def apriori(item_data, minsup=0.0, minconf=0.0):	
 	print("start apriori mining")
 	
-	N = None
-	minsup = 0.87
-	minconf = 0.6
-	
-	f = codecs.open('./traffic_data/trafic_data.json','r','utf-8')
-	data = json.load(f)
-	N = float(len(data))
-	
-	item_data = []
-	
-	print "loading file"
-	for d in data:
-		item_data.append( d[u"items"] )
-	
-	# item_data = [["b","c","d"],["a","b"],["a","d","e"],["b","c","d"],["b","d"]]
-	# N = 5.
-	
+	N = float(len(item_data))
+
 	print "make set file"
 	set_data = set()
 	for T in item_data:
@@ -33,6 +15,14 @@ if __name__ == "__main__":
 			set_data.add(item)
 	
 	set_data = sorted(set_data)
+	
+	'''
+	import time
+	for s in set_data:
+		print s
+		time.sleep(0.1)
+	exit()
+	'''
 	
 	print "N :",N,"set_num :",len(set_data),"minsup :",minsup,"minconf :",minconf
 	print "make C_0"
@@ -62,9 +52,6 @@ if __name__ == "__main__":
 	F_k.append(F_0)
 	
 	for k in range( len(set_data) ):
-		
-		print "k :",k,
-		
 		C_kp1 = set()
 		for i in range(len(F_k[k]))[:-1]:
 			for j in range(len(F_k[k]))[i + 1:]:
@@ -76,9 +63,10 @@ if __name__ == "__main__":
 		# print "C_" + str(k+1), [_ for _ in C_kp1]
 		
 		F_kp1 = []
+		
 		for i, c in enumerate(C_kp1):
 			
-			log_c = "C_" + str(k+1) + " " + str(i) + "/" + str(len(C_kp1) - 1)
+			log_c = "C_" + str(k+1) + " " + str(i+1) + "/" + str(len(C_kp1))
 			sys.stdout.write("\r" + log_c)
 			sys.stdout.flush()
 			
@@ -92,8 +80,11 @@ if __name__ == "__main__":
 					count += 1
 			if(count/N >= minsup):
 				F_kp1.append(list(c))
-		print ""
-		# print "F_" + str(k+1), F_kp1
+			
+		if(len(C_kp1) == 0):
+			print "C_" + str(k+1) + " " + "0/0"
+		else:
+			print ""
 		
 		print "F_" + str(k+1),len(F_kp1)
 		
@@ -130,21 +121,9 @@ if __name__ == "__main__":
 	# print freq_dict
 	
 	# confidense
-	conf_dict = []
+	rule_dict = []
 	
 	for i, F in enumerate(F_k):
-		#if(i + 1 == 2):
-		#	for f in F:
-		#		supX = float( freq_dict[tuple([f[0]])] )
-		#		confXY = freq_dict[tuple(f)] / supX
-		#		if(confXY >= minconf):
-		#			conf_dict.append({"X":f[0], "Y":f[1], "support":supX, "confidense":confXY})
-		#		
-		#		supY = float( freq_dict[tuple([f[1]])] )
-		#		confYX = freq_dict[tuple(f)] / supY
-		#		if(confYX >= minconf):
-		#			conf_dict.append({"X":f[0], "Y":f[1], "sup":supY, "conf":confYX})
-		
 		if(i + 1 >= 2):
 			for f in F:
 				k = i + 1
@@ -156,16 +135,23 @@ if __name__ == "__main__":
 								Y.append(item_y)
 						X = tuple( sorted(X) )
 						Y = tuple( sorted(Y) )
-						supX = float( freq_dict[X] )
-						confXY = freq_dict[ tuple( sorted(f) ) ] / supX
 						
+						# debug - duplicate 
+						isDuplicate = False
+						for rule in rule_dict:
+							if(tuple(sorted(rule["X"])) == X and tuple(sorted(rule["Y"])) == Y):
+								isDuplicate = True
+								break
+						if(isDuplicate):
+							continue
+						
+						supX = float( freq_dict[X] ) / N
+						supY = float( freq_dict[Y] ) / N
+						supXY = float( freq_dict[ tuple( sorted(f) ) ] ) / N
+						confXY = supXY / supX
+						liftXY = confXY / supY
 						if(confXY >= minconf):
-							conf_dict.append({"X":list(X), "Y":list(Y), "support":supX/N, "confidence":confXY})
-		
-	print str( len(conf_dict) ) + " rules"
-	print "writing data"
-	output_json = codecs.open("./traffic_data/trafic_data_rules.json", "w", "utf-8")
-	json.dump(conf_dict, output_json, indent = 4, ensure_ascii = False)
-	output_json.close()
-	
-	print "finish!!"
+							rule_dict.append({"X":list(X), "Y":list(Y), "support":supXY, "confidence":confXY, "lift":liftXY})
+	print str( len(rule_dict) ) + " rules"
+	print "apriori finish!!"
+	return rule_dict
