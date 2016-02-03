@@ -12,11 +12,13 @@ if __name__ == "__main__":
 
 	print "start traffic_mining"
 	
+	h22 = codecs.open("traffic_data/h22.csv", "r", "utf-8")
+	h23 = codecs.open("traffic_data/h23.csv", "r", "utf-8")
 	h24 = codecs.open("traffic_data/h24.csv", "r", "utf-8")
 	h25 = codecs.open("traffic_data/h25.csv", "r", "utf-8")
 	h26 = codecs.open("traffic_data/h26.csv", "r", "utf-8")
 	
-	f = [h24,h25,h26]
+	f = [h22,h23,h24,h25,h26]
 	
 	row_counter = 0
 	row_label = []
@@ -51,12 +53,15 @@ if __name__ == "__main__":
 		item_dict = {}
 		
 		item_dict["id"] = data["id"]
+		
+		'''
 		item_dict["latitude"] = float(data[u"地点緯度"])
 		item_dict["longitude"] = float(data[u"地点経度"])
 		
 		if(item_dict["latitude"] == 0 or item_dict["longitude"] == 0):
 			print "\n" + "id " + str( data["id"] ) + " : detect null position item"
 			continue
+		'''
 		
 		item_list = []
 		key = u"事故類型_１"
