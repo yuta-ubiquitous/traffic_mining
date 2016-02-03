@@ -3,7 +3,7 @@
 import sys
 import itertools
 
-def apriori(item_data, minsup=0.0, minconf=0.0):	
+def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):	
 	print("start apriori mining")
 	
 	N = float(len(item_data))
@@ -150,6 +150,11 @@ def apriori(item_data, minsup=0.0, minconf=0.0):
 						supXY = float( freq_dict[ tuple( sorted(f) ) ] ) / N
 						confXY = supXY / supX
 						liftXY = confXY / supY
+						
+						if(liftcut):
+							if(liftXY <= 1.0):
+								continue
+						
 						if(confXY >= minconf):
 							rule_dict.append({"X":list(X), "Y":list(Y), "support":supXY, "confidence":confXY, "lift":liftXY})
 	print str( len(rule_dict) ) + " rules"
