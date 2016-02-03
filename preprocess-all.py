@@ -12,6 +12,8 @@ if __name__ == "__main__":
 
 	print "start traffic_mining"
 	
+	output_name = "./traffic_data/trafic_data.json"
+	
 	h22 = codecs.open("traffic_data/h22.csv", "r", "utf-8")
 	h23 = codecs.open("traffic_data/h23.csv", "r", "utf-8")
 	h24 = codecs.open("traffic_data/h24.csv", "r", "utf-8")
@@ -250,7 +252,7 @@ if __name__ == "__main__":
 	
 	# output preprocess data to json file
 	print "writing data"
-	output_json = codecs.open("./traffic_data/trafic_data.json", "w", "utf-8")
+	output_json = codecs.open(output_name, "w", "utf-8")
 	json.dump(output_dict, output_json, indent = 4, ensure_ascii = False)
 	output_json.close()
 	
