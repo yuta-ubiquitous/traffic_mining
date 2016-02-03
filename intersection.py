@@ -33,9 +33,10 @@ if __name__ == "__main__":
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
 	file_name = "trafic_data_sub"
-	minsup = 0.3
-	minconf = 0.3
+	minsup = 0.2
+	minconf = 0.5
 	intersection_range = 100.0 #[m]
+	minaccidents = 10
 	
 	input_file = "./traffic_data/" + file_name + ".json"
 	intersection_file_path = "./traffic_data/intersection.csv"
@@ -63,6 +64,8 @@ if __name__ == "__main__":
 				accident_count += 1
 				item_data.append( d[u"items"] )
 		print "accident num : " + str(accident_count)
+		if(accident_count <= minaccidents):
+			continue
 		
 		# start apriori
 		result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True)	
@@ -75,7 +78,7 @@ if __name__ == "__main__":
 		print "writing data csv"
 		output_csv = codecs.open("./traffic_data/intersection/" + name + ".csv", "w", "shift-jis")
 		
-		header_txt = "\"" + str( len(result) ) + " rules, minsup=" + str( minsup ) + ",minconf=" + str(minconf) + "\"\n"
+		header_txt = "\"" + str(accident_count) + " accident, " +str( len(result) ) + " rules, minsup=" + str( minsup ) + ",minconf=" + str(minconf) + "\"\n"
 		output_csv.write(header_txt)
 		
 		row_txt = "X,Y,support,confidence,lift\n"

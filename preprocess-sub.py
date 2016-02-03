@@ -65,11 +65,13 @@ if __name__ == "__main__":
 		'''
 		key = u"事故類型_１"
 		item_list.append( key + u":" + data[key] )
+		'''
 		
 		key = u"事故類型_２"
 		for item in data[key].split(u"・"):
 			item_list.append( key + u":" + item )
 		
+		'''
 		key = u"死者数"
 		item_list.append( u"死者" + u":" + (u"あり" if int( data[key] ) > 0 else u"なし" ) )
 		
@@ -85,12 +87,11 @@ if __name__ == "__main__":
 		key = u"昼夜"
 		item_list.append( key + u":" + data[key] )
 		
-		'''
-		
 		key = u"道路形状"
 		for item in data[key].split(u"・"):
 			item_list.append( key + u":" + item )
-			
+		'''	
+		
 		key = u"年齢_１当"
 		item_list.append( key + u":" + str( int( data[key] ) / 10 * 10 ) + u"歳代" )
 		
@@ -98,6 +99,7 @@ if __name__ == "__main__":
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + str( int( data[key] ) / 10 * 10 ) + u"歳代" )
 		
+		'''	
 		key = u"当事者種_1"
 		for item in data[key].split(u"　"):
 			item_list.append( key + u":" + item )
@@ -116,7 +118,6 @@ if __name__ == "__main__":
 			for item2 in item1.split(u"・"):
 				item_list.append( key + u":" + item2 )
 		
-		'''
 		key = u"事故内容"
 		item_list.append( key + u":" + data[key] )
 		'''
@@ -176,13 +177,13 @@ if __name__ == "__main__":
 		key = u"曜日"
 		item_list.append( key + u":" + data[key] )
 		
+		'''
 		key = u"天候"
 		item_list.append( key + u":" + data[key] )
 		
 		key = u"路面状態"
 		item_list.append( key + u":" + data[key] )
 		
-		'''
 		key = u"信号機"
 		item_list.append( key + u":" + data[key] )
 		
@@ -240,21 +241,13 @@ if __name__ == "__main__":
 		key = u"車両損壊_２当"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
-		
-		'''
-		
+			
 		key = u"１当進行方向"
 		item_list.append( key + u":" + data[key] )
 		
 		key = u"２当進行方向"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
-		
-		'''
-		print data[u"id"],
-		for i in item_list:
-			print i,
-		print ""
 		'''
 		
 		item_dict["items"] = item_list
