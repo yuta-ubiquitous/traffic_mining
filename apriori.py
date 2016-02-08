@@ -6,34 +6,26 @@ import itertools
 def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):	
 	print("start apriori mining")
 	
+	item_data = [      ['beer','nuts','cheese'],
+                ['beer','nuts','jam'],
+                ['beer','butter'],
+                ['nuts','cheese'],
+                ['beer','nuts','cheese','jam'],
+                ['butter'],
+                ['beer','nuts','jam','butter'],
+                ['jam']] 
+	
 	N = float(len(item_data))
-
-	print "make set file"
-	set_data = set()
+	
+	print "N :",N,"minsup :",minsup,"minconf :",minconf
+	print "make C_0"
+	
+	C_0 = set()
 	for T in item_data:
 		for item in T:
-			set_data.add(item)
+			C_0.add(item)
 	
-	set_data = sorted(set_data)
-	
-	'''
-	import time
-	for s in set_data:
-		print s
-		time.sleep(0.1)
-	exit()
-	'''
-	
-	print "N :",N,"set_num :",len(set_data),"minsup :",minsup,"minconf :",minconf
-	print "make C_0"
-	C_0 = {}
-	for item in set_data:
-		C_0[item] = 0
-		
-	for T in item_data:
-		for one_set in set_data:
-			if one_set in T:
-				C_0[one_set] += 1
+	C_0 = sorted(C_0)
 				
 	# show pattern times
 	# for one_set in set_data:
@@ -43,16 +35,41 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 	
 	print "make F_0"
 	F_0 = []
-	for one_set in set_data:
-		if(C_0[one_set]/N >= minsup):
-			F_0.append([one_set])
 	
-	# print F_0
+	item_counter0 = {}
+	for item in C_0:
+		item_counter0[item] = 0.0
 	
+	for T in item_data:
+		for item in T:
+			item_counter0[item] += 1.0
+			
+	for item in C_0:
+		if(item_counter0[item]/N >= minsup):
+			F_0.append([item] )
+
 	F_k.append(F_0)
 	
-	for k in range( len(set_data) ):
+	for k in range(len(C_0)):
 		C_kp1 = set()
+		
+		set_items = set()
+		for f in F_k[k]:
+			for item in f:
+				set_items.add(item)
+		
+		for X_kp1 in list(itertools.combinations(set_items, k + 2 ) ):
+			isAllClear = True
+			for X_k in list(itertools.combinations(X_kp1, k + 1 ) ):
+				if( tuple( sorted(X_k) ) in F_k[k]):
+					pass
+				else:
+					isAllClear = False
+					break
+			if( isAllClear ):
+				C_kp1.add( tuple( sorted(X_kp1) ) )
+			
+		'''
 		for i in range(len(F_k[k]))[:-1]:
 			for j in range(len(F_k[k]))[i + 1:]:
 				 c = []
@@ -60,6 +77,7 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 				 c.extend(F_k[k][j])
 				 c.sort()
 				 C_kp1.add( tuple(set(c)) )
+		'''
 		# print "C_" + str(k+1), [_ for _ in C_kp1]
 		
 		F_kp1 = []
