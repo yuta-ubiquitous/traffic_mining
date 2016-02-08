@@ -6,15 +6,6 @@ import itertools
 def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):	
 	print("start apriori mining")
 	
-	item_data = [      ['beer','nuts','cheese'],
-                ['beer','nuts','jam'],
-                ['beer','butter'],
-                ['nuts','cheese'],
-                ['beer','nuts','cheese','jam'],
-                ['butter'],
-                ['beer','nuts','jam','butter'],
-                ['jam']] 
-	
 	N = float(len(item_data))
 	
 	print "N :",N,"minsup :",minsup,"minconf :",minconf
