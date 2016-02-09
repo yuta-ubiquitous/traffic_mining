@@ -32,51 +32,49 @@ if __name__ == "__main__":
 	print "*** intersection.py ***"
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
-	file_name = "trafic_data_sub"
+	file_name = "trafic_data_intersection"
 	minsup = 0.2
 	minconf = 0.5
-	intersection_range = 100.0 #[m]
 	minaccidents = 10
 	
 	input_file = "./traffic_data/" + file_name + ".json"
-	intersection_file_path = "./traffic_data/intersection.csv"
 	
 	f = codecs.open(input_file,"r","utf-8")
 	data = json.load(f)
 	f.close()
 	
-	intersection_file = codecs.open(intersection_file_path,"r","utf-8")
+	intersection_set = set()
+	for T in data:
+		intersection_set.add( T["intersection"] )
 	
-	for intersection_data in intersection_file:
+	print str( len(intersection_set) ) + " intersections"
+	
+	for intersection_name in intersection_set:
 		
-		name = intersection_data.split(",")[0]
-		longitude = float(intersection_data.split(",")[1])
-		latitude = float(intersection_data.split(",")[2])
-		print "processing " + name + " intersection"
+		print "processing " + intersection_name + " intersection"
 		
 		item_data=[]
 		accident_count = 0
 		
-		for d in data:
-			dlon = d["longitude"]
-			dlat = d["latitude"]
-			if(hubeny(longitude, latitude, dlon, dlat) <= intersection_range):
+		for T in data:
+			if(T["intersection"] == intersection_name):
 				accident_count += 1
-				item_data.append( d[u"items"] )
+				item_data.append( T[u"items"] )
 		print "accident num : " + str(accident_count)
 		if(accident_count <= minaccidents):
+			print "num is little"
 			continue
 		
 		# start apriori
 		result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True)	
 	
 		print "writing data json"
-		output_json = codecs.open("./traffic_data/intersection/" + name + ".json", "w", "utf-8")
+		output_json = codecs.open("./traffic_data/intersection/" + intersection_name + ".json", "w", "utf-8")
 		json.dump(result, output_json, indent = 4, ensure_ascii = False)
 		output_json.close()
 		
 		print "writing data csv"
-		output_csv = codecs.open("./traffic_data/intersection/" + name + ".csv", "w", "shift-jis")
+		output_csv = codecs.open("./traffic_data/intersection/" + intersection_name + ".csv", "w", "shift-jis")
 		
 		header_txt = "\"" + str(accident_count) + " accident, " +str( len(result) ) + " rules, minsup=" + str( minsup ) + ",minconf=" + str(minconf) + "\"\n"
 		output_csv.write(header_txt)
@@ -102,7 +100,6 @@ if __name__ == "__main__":
 			row_data += ( X_txt + "," + Y_txt + "," + str(row["support"]) + "," + str(row["confidence"]) + "," + str(row["lift"]) + "\n")
 			output_csv.write(row_data)
 		output_csv.close()
-	intersection_file.close()
 	
 	end_t = datetime.now()
 	between_t = end_t - start_t

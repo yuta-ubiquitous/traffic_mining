@@ -34,10 +34,10 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 	for T in item_data:
 		for item in T:
 			item_counter0[item] += 1.0
-			
+	
 	for item in C_0:
 		if(item_counter0[item]/N >= minsup):
-			F_0.append([item] )
+			F_0.append( [item] )
 
 	F_k.append(F_0)
 	
@@ -52,14 +52,16 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 		for X_kp1 in list(itertools.combinations(set_items, k + 2 ) ):
 			isAllClear = True
 			for X_k in list(itertools.combinations(X_kp1, k + 1 ) ):
-				if( tuple( sorted(X_k) ) in F_k[k]):
+				F_tuple = tuple( sorted( tuple(F) for F in F_k[k] ) )
+				
+				if( tuple( sorted(X_k) ) in F_tuple):
 					pass
 				else:
 					isAllClear = False
 					break
 			if( isAllClear ):
 				C_kp1.add( tuple( sorted(X_kp1) ) )
-			
+		
 		'''
 		for i in range(len(F_k[k]))[:-1]:
 			for j in range(len(F_k[k]))[i + 1:]:

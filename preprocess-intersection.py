@@ -12,7 +12,9 @@ if __name__ == "__main__":
 
 	print "start traffic_mining"
 	
-	output_name = "./traffic_data/trafic_data_sub.json"
+	output_name = "./traffic_data/trafic_data_intersection.json"
+	h22 = codecs.open("traffic_data/h22.csv", "r", "utf-8")
+	h23 = codecs.open("traffic_data/h23.csv", "r", "utf-8")
 	h24 = codecs.open("traffic_data/h24.csv", "r", "utf-8")
 	h25 = codecs.open("traffic_data/h25.csv", "r", "utf-8")
 	h26 = codecs.open("traffic_data/h26.csv", "r", "utf-8")
@@ -52,26 +54,23 @@ if __name__ == "__main__":
 		item_dict = {}
 		
 		item_dict["id"] = data["id"]
-		item_dict["latitude"] = float(data[u"地点緯度"])
-		item_dict["longitude"] = float(data[u"地点経度"])
-		
-		if(item_dict["latitude"] == 0 or item_dict["longitude"] == 0):
-			print "\n" + "id " + str( data["id"] ) + " : detect null position item"
-			continue
 		
 		item_list = []
 		
+		key = u"交差点"
+		if( len(data[key]) == 0):
+			continue
+		else:
+			item_dict["intersection"] = data[key]
 		
 		'''
 		key = u"事故類型_１"
 		item_list.append( key + u":" + data[key] )
-		'''
 		
 		key = u"事故類型_２"
 		for item in data[key].split(u"・"):
 			item_list.append( key + u":" + item )
 		
-		'''
 		key = u"死者数"
 		item_list.append( u"死者" + u":" + (u"あり" if int( data[key] ) > 0 else u"なし" ) )
 		
@@ -89,8 +88,7 @@ if __name__ == "__main__":
 		
 		key = u"道路形状"
 		for item in data[key].split(u"・"):
-			item_list.append( key + u":" + item )
-		'''	
+			item_list.append( key + u":" + item )	
 		
 		key = u"年齢_１当"
 		item_list.append( key + u":" + str( int( data[key] ) / 10 * 10 ) + u"歳代" )
@@ -99,7 +97,6 @@ if __name__ == "__main__":
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + str( int( data[key] ) / 10 * 10 ) + u"歳代" )
 		
-		'''	
 		key = u"当事者種_1"
 		for item in data[key].split(u"　"):
 			item_list.append( key + u":" + item )
