@@ -129,7 +129,7 @@ if __name__ == "__main__":
 		# 夏 6-8月
 		# 秋 9-11月
 		# 冬 12-2月
-		month = int(time0[1])
+		month = int(time0[1].strip())
 		season = ""
 		if(month >= 3 and month <= 5):
 			season = u"春"
@@ -151,24 +151,25 @@ if __name__ == "__main__":
 		# 夕方 15-17時
 		# 夜の初め頃 18-20時
 		# 夜遅く 21-23時
-		hour = int(time1[0])
+		hour = int(time1[0].strip())
 		timezone = ""
 		if(hour >= 0 and hour <= 2):
 			timezone = u"未明"
-		elif(month >= 3 and month <= 5):
+		elif(hour >= 3 and hour <= 5):
 			timezone = u"明け方"
-		elif(month >= 6 and month <= 8):
+		elif(hour >= 6 and hour <= 8):
 			timezone = u"朝"
-		elif(month >= 9 and month <= 11):
+		elif(hour >= 9 and hour <= 11):
 			timezone = u"昼前"
-		elif(month >= 12 and month <= 14):
+		elif(hour >= 12 and hour <= 14):
 			timezone = u"昼過ぎ"
-		elif(month >= 15 and month <= 17):
+		elif(hour >= 15 and hour <= 17):
 			timezone = u"夕方"
-		elif(month >= 18 and month <= 20):
+		elif(hour >= 18 and hour <= 20):
 			timezone = u"夜の初め頃"
-		elif(month >= 21 and month <= 23):
+		elif(hour >= 21 and hour <= 23):
 			timezone = u"夜遅く"
+			
 		item_list.append( key + u"_時間帯" + u":" + timezone )
 		
 		key = u"曜日"

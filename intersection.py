@@ -52,6 +52,7 @@ if __name__ == "__main__":
 	
 	print str( len(intersection_set) ) + " intersections"
 	
+	# Start mining
 	for intersection_name in intersection_set:
 		
 		print "processing " + intersection_name + " intersection"
@@ -102,7 +103,8 @@ if __name__ == "__main__":
 		
 		for row in result:
 			row["intersection"] = intersection_name
-			row["index"] = accident_count * row["support"]
+			row["number of transaction"] = accident_count * row["support"]
+			row["number of accidents"] = accident_count
 			all_rule_list.append(row)
 	
 	print "writing data json"
@@ -115,7 +117,7 @@ if __name__ == "__main__":
 	header_txt = "\"" + str(len(data)) + " accident, " +str( len(all_rule_list) ) + " rules, minsup=" + str( minsup ) + ",minconf=" + str(minconf) + "\"\n"
 	all_output_csv.write(header_txt)
 	
-	row_txt = "X,Y,index,intersection,support,confidence,lift\n"
+	row_txt = "X,Y,number of transaction,intersection,number of accidents,support,confidence,lift\n"
 	all_output_csv.write(row_txt)
 	
 	for row in all_rule_list:
@@ -131,7 +133,7 @@ if __name__ == "__main__":
 			Y_txt += ( "," + y )
 		Y_txt += "]\""
 		
-		row_data = ( X_txt + "," + Y_txt + "," + str(row["index"]) + "," + row["intersection"] + "," + str(row["support"]) + "," + str(row["confidence"]) + "," + str(row["lift"]) + "\n")
+		row_data = ( X_txt + "," + Y_txt + "," + str(row["number of transaction"]) + "," + row["intersection"] + "," + str(row["number of accidents"]) + "," + str(row["support"]) + "," + str(row["confidence"]) + "," + str(row["lift"]) + "\n")
 		all_output_csv.write(row_data)
 	all_output_csv.close()
 	
