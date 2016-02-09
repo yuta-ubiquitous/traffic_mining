@@ -121,6 +121,7 @@ if __name__ == "__main__":
 		
 		key = u"発生時分"
 		# 年/月/日
+		item_dict["date"] = data[key]
 		item = data[key].split(u" ")
 		time0 = item[0].split(u"/")
 		# item_list.append( key + u"_年" + u":" + time0[0] )
