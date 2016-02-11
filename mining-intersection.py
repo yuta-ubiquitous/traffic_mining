@@ -7,29 +7,10 @@ import math
 
 from apriori import apriori
 
-def hubeny(lon1, lat1, lon2, lat2):
-	
-	x1 = lon1 * math.pi / 180.0
-	y1 = lat1 * math.pi / 180.0
-	x2 = lon2 * math.pi / 180.0
-	y2 = lat2 * math.pi / 180.0
-	
-	a = 6378137.000
-	b = 6356752.314245
-	e = math.sqrt( (a**2 - b**2) / a**2 )
-	dy = y1 - y2
-	dx = x1 - x2
-	mu_y = (y1 + y2)/2.0
-	W = math.sqrt(1.0 - e**2 * math.sin(mu_y) ** 2)
-	M = a * (1 - e**2) / W**3
-	N = a / W
-	d = math.sqrt( (dy*M)**2 + (dx*N*math.cos(mu_y))**2 )
-	return d
-
 if __name__ == "__main__":
 	
 	start_t = datetime.now()
-	print "*** intersection.py ***"
+	print "*** mining-intersection.py ***"
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
 	file_name = "trafic_data_intersection"
@@ -70,7 +51,7 @@ if __name__ == "__main__":
 			continue
 		
 		# start apriori
-		result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True)	
+		result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True, log=False)	
 	
 		output_json = codecs.open("./traffic_data/intersection/" + intersection_name + ".json", "w", "utf-8")
 		json.dump(result, output_json, indent = 4, ensure_ascii = False)

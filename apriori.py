@@ -3,13 +3,14 @@
 import sys
 import itertools
 
-def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):	
-	print("start apriori mining")
+def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False, frequent_pattern=False, log=True):	
+	
+	if log: print("start apriori mining")
 	
 	N = float(len(item_data))
 	
-	print "N :",N,"minsup :",minsup,"minconf :",minconf
-	print "make C_0"
+	if log: print "N :",N,"minsup :",minsup,"minconf :",minconf
+	if log: print "make C_0"
 	
 	C_0 = set()
 	for T in item_data:
@@ -24,7 +25,7 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 	
 	F_k = []
 	
-	print "make F_0"
+	if log: print "make F_0"
 	F_0 = []
 	
 	item_counter0 = {}
@@ -77,9 +78,10 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 		
 		for i, c in enumerate(C_kp1):
 			
-			log_c = "C_" + str(k+1) + " " + str(i+1) + "/" + str(len(C_kp1))
-			sys.stdout.write("\r" + log_c)
-			sys.stdout.flush()
+			if log:
+				log_c = "C_" + str(k+1) + " " + str(i+1) + "/" + str(len(C_kp1))
+				sys.stdout.write("\r" + log_c)
+				sys.stdout.flush()
 			
 			count = 0
 			for T in item_data:
@@ -91,20 +93,21 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 					count += 1
 			if(count/N >= minsup):
 				F_kp1.append(list(c))
-			
-		if(len(C_kp1) == 0):
-			print "C_" + str(k+1) + " " + "0/0"
-		else:
-			print ""
 		
-		print "F_" + str(k+1),len(F_kp1)
+		if log:	
+			if(len(C_kp1) == 0):
+				print "C_" + str(k+1) + " " + "0/0"
+			else:
+				print ""
+		
+		if log: print "F_" + str(k+1),len(F_kp1)
 		
 		if( len(F_kp1) == 0):
 			break
 		else:
 			F_k.append(F_kp1)
 			
-	print "frequent patterns"
+	if log: print "frequent patterns"
 	
 	freq_dict = {}
 	
@@ -127,9 +130,10 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 			
 			freq_dict.update({tuple(sorted(f)):all_count})
 			
-	print str(num),"patterns"
+	if log: print str(num),"patterns"
 	
-	# print freq_dict
+	if frequent_pattern:
+		return freq_dict
 	
 	# confidense
 	rule_dict = []
@@ -165,9 +169,9 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False):
 						if(liftcut):
 							if(liftXY <= 1.0):
 								continue
-						
 						if(confXY >= minconf):
 							rule_dict.append({"X":list(X), "Y":list(Y), "support":supXY, "confidence":confXY, "lift":liftXY})
-	print str( len(rule_dict) ) + " rules"
-	print "apriori finish!!"
+							
+	if log: print str( len(rule_dict) ) + " rules"
+	if log: print "apriori finish!!"
 	return rule_dict

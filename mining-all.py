@@ -12,7 +12,7 @@ if __name__ == "__main__":
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
 	file_name = "trafic_data"
-	minsup = 0.50
+	minsup = 0.30
 	minconf = 0.5
 	
 	input_file = "./traffic_data/" + file_name + ".json"
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 	for d in data:
 		item_data.append( d[u"items"] )
 	
-	result = apriori(item_data, minsup=minsup, minconf=minconf)		
+	result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True)		
 	
 	print "writing data json"
 	output_json = codecs.open(output_file_json, "w", "utf-8")
