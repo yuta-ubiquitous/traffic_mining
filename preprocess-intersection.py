@@ -19,7 +19,7 @@ if __name__ == "__main__":
 	h25 = codecs.open("traffic_data/h25.csv", "r", "utf-8")
 	h26 = codecs.open("traffic_data/h26.csv", "r", "utf-8")
 	
-	f = [h24,h25,h26]
+	f = [h22,h23,h24,h25,h26]
 	
 	row_counter = 0
 	row_label = []

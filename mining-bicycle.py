@@ -7,6 +7,29 @@ import math
 
 from apriori import apriori
 
+def output_process(result, path, length, minsup):
+	print "writing data json"
+	output_json = codecs.open(path + ".json","w","utf-8")
+	json.dump(result, output_json, indent = 4, ensure_ascii = False)
+	output_json.close()
+	
+	print "writing data csv"
+	output_csv = codecs.open(path +  ".csv", "w", "shift-jis")
+	header_txt = "\"" + str(length) + " accident, " +str( len(result) ) + " patterns, minsup=" + str( minsup ) + "\"\n"
+	output_csv.write(header_txt)
+	row_txt = u"patterns,support,潜在率\n"
+	output_csv.write(row_txt)
+	
+	for pattern in result:
+		pattern_txt = ""
+		pattern_txt += "\"" + pattern["pattern"][0]
+		for item in pattern["pattern"][1:]:
+			pattern_txt += ( "," + item )
+		pattern_txt += "\""
+		row_data = ( pattern_txt + "," + str( pattern["support"] ) + "," + str( pattern["potential"] ) + "\n")
+		output_csv.write(row_data)		
+	output_csv.close()
+
 if __name__ == "__main__":
 	
 	start_t = datetime.now()
@@ -32,73 +55,37 @@ if __name__ == "__main__":
 			T_car_bicycle.append( T[u"items"] )
 	
 	# Start mining
-	
 	# car_car
-	output_file_name = "乗用車-乗用車"
-	result = apriori(T_car_car, minsup=minsup, frequent_pattern=True)
-	
-	result_json = []
-	for pattern,support in result.items():
-		json_data = {}
-		json_data["pattern"] = pattern
-		json_data["support"] = support/float( len(T_car_car) )
-		result_json.append(json_data)
-	
-	print "writing data json"
-	car_car_output_json = codecs.open(output_path + output_file_name + ".json","w","utf-8")
-	json.dump(result_json, car_car_output_json, indent = 4, ensure_ascii = False)
-	car_car_output_json.close()
-	
-	print "writing data csv"
-	output_csv = codecs.open(output_path + output_file_name +  ".csv", "w", "shift-jis")
-	header_txt = "\"" + str(len(T_car_car)) + " accident, " +str( len(result) ) + " patterns, minsup=" + str( minsup ) + "\"\n"
-	output_csv.write(header_txt)
-	row_txt = "patterns,support\n"
-	output_csv.write(row_txt)
-	
-	for pattern,support in result.items():
-		pattern_txt = ""
-		pattern_txt += "\"" + pattern[0]
-		for item in pattern[1:]:
-			pattern_txt += ( "," + item )
-		pattern_txt += "\""
-		row_data = ( pattern_txt + "," + str( support/float( len(T_car_car) ) ) + "\n")
-		output_csv.write(row_data)		
-	output_csv.close()
+	file_name_car_car = "乗用車-乗用車"
+	result_car_car = apriori(T_car_car, minsup=minsup, frequent_pattern=True)
 	
 	# car_bicycle
-	output_file_name = "乗用車-自転車"
-	result = apriori(T_car_bicycle, minsup=minsup, frequent_pattern=True)
+	file_name_car_bicycle = "乗用車-自転車"
+	result_car_bicycle = apriori(T_car_bicycle, minsup=minsup, frequent_pattern=True)
 	
-	result_json = []
-	for pattern,support in result.items():
-		json_data = {}
-		json_data["pattern"] = pattern
-		json_data["support"] = support/float(len(T_car_bicycle))
-		result_json.append(json_data)
-	
-	print "writing data json"
-	car_bicycle_output_json = codecs.open(output_path + output_file_name + ".json","w","utf-8")
-	json.dump(result_json, car_bicycle_output_json, indent = 4, ensure_ascii = False)
-	car_bicycle_output_json.close()
-	
-	print "writing data csv"
-	output_csv = codecs.open(output_path + output_file_name +  ".csv", "w", "shift-jis")
-	header_txt = "\"" + str(len(T_car_bicycle)) + " accident, " +str( len(result) ) + " patterns, minsup=" + str( minsup ) + "\"\n"
-	output_csv.write(header_txt)
-	row_txt = "patterns,support\n"
-	output_csv.write(row_txt)
-	
-	for pattern,support in result.items():
-		pattern_txt = ""
-		pattern_txt += "\"" + pattern[0]
-		for item in pattern[1:]:
-			pattern_txt += ( "," + item )
-		pattern_txt += "\""
+	for pattern in result_car_car:
+		isExist = False
+		for com_pattern in result_car_bicycle:
+			if( pattern["pattern"] == com_pattern["pattern"]):
+				isExist = True
+				pattern["potential"] = pattern["support"] / com_pattern["support"]
+				break
+				
+		if(not isExist):
+			pattern["potential"] = 99999
+	output_process(result_car_car, output_path + file_name_car_car, len(T_car_car), minsup)
 		
-		row_data = ( pattern_txt + "," + str( support/float(len(T_car_bicycle)) ) + "\n")
-		output_csv.write(row_data)
-	output_csv.close()
+	for pattern in result_car_bicycle:
+		isExist = False
+		for com_pattern in result_car_car:
+			if( pattern["pattern"] == com_pattern["pattern"]):
+				isExist = True
+				pattern["potential"] = pattern["support"] / com_pattern["support"]
+				break
+				
+		if(not isExist):
+			pattern["potential"] = 99999
+	output_process(result_car_bicycle, output_path + file_name_car_bicycle, len(T_car_bicycle), minsup)
 	
 	# end process
 	end_t = datetime.now()

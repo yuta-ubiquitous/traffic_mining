@@ -12,7 +12,7 @@ if __name__ == "__main__":
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
 	file_name = "trafic_data"
-	minsup = 0.30
+	minsup = 0.40
 	minconf = 0.5
 	
 	input_file = "./traffic_data/" + file_name + ".json"

@@ -133,7 +133,13 @@ def apriori(item_data, minsup=0.0, minconf=0.0, liftcut=False, frequent_pattern=
 	if log: print str(num),"patterns"
 	
 	if frequent_pattern:
-		return freq_dict
+		result_freq = []
+		for pattern,num in freq_dict.items():
+			json_data = {}
+			json_data["pattern"] = pattern
+			json_data["support"] = num/N
+			result_freq.append(json_data)
+		return result_freq
 	
 	# confidense
 	rule_dict = []

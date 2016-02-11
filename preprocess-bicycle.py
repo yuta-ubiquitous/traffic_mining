@@ -19,7 +19,7 @@ if __name__ == "__main__":
 	h25 = codecs.open("traffic_data/h25.csv", "r", "utf-8")
 	h26 = codecs.open("traffic_data/h26.csv", "r", "utf-8")
 	
-	f = [h24,h25,h26]
+	f = [h22,h23,h24,h25,h26]
 	
 	row_counter = 0
 	row_label = []
@@ -187,10 +187,10 @@ if __name__ == "__main__":
 		key = u"天候"
 		item_list.append( key + u":" + data[key] )
 		
-		'''
-		
 		key = u"路面状態"
 		item_list.append( key + u":" + data[key] )
+		
+		'''
 		
 		key = u"信号機"
 		item_list.append( key + u":" + data[key] )
@@ -248,13 +248,14 @@ if __name__ == "__main__":
 		key = u"車両損壊_２当"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
-			
+		
 		key = u"１当進行方向"
 		item_list.append( key + u":" + data[key] )
 		
 		key = u"２当進行方向"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
+			
 		'''
 		
 		item_dict["items"] = item_list
