@@ -74,6 +74,10 @@ if __name__ == "__main__":
 			continue
 		elif(vehicle2_type[0] == u"乗用車"):
 			item_dict[u"被害車種"] = vehicle2_type[0]
+		elif(vehicle2_type[0] == u"二輪車"):
+			item_dict[u"被害車種"] = vehicle2_type[0]
+		elif(vehicle2_type[0] == u"歩行者"):
+			item_dict[u"被害車種"] = vehicle2_type[0]
 		elif(vehicle2_type[1] == u"自転車"):
 			item_dict[u"被害車種"] = vehicle2_type[1]
 		else:
