@@ -54,25 +54,34 @@ if __name__ == "__main__":
 				if(not isExist):
 					pattern[com_vehicle] = 99999
 		
-		print "writing data json"
+		path = output_path + u"乗用車-" + vehicle
+		print "writing " + vehicle + " data json"
 		output_json = codecs.open(path + ".json","w","utf-8")
-		json.dump(result, output_json, indent = 4, ensure_ascii = False)
+		json.dump(result_dict[vehicle], output_json, indent = 4, ensure_ascii = False)
 		output_json.close()
 		
-		print "writing data csv"
+		print "writing " + vehicle + " data csv"
 		output_csv = codecs.open(path +  ".csv", "w", "shift-jis")
-		header_txt = "\"" + str(length) + " accident, " +str( len(result) ) + " patterns, minsup=" + str( minsup ) + "\"\n"
+		header_txt = "\"" + str( len(T_dict[vehicle]) ) + " accident, " +str( len(result_dict[vehicle]) ) + " patterns, minsup=" + str( minsup ) + "\"\n"
 		output_csv.write(header_txt)
-		row_txt = u"patterns,support,潜在率\n"
+		
+		row_txt = u"patterns,support"
+		for v in other_vehicle_list:
+			row_txt += "," + u"増加率_" + v
+		row_txt += "\n"
 		output_csv.write(row_txt)
 		
-		for pattern in result:
+		for pattern in result_dict[vehicle]:
 			pattern_txt = ""
 			pattern_txt += "\"" + pattern["pattern"][0]
 			for item in pattern["pattern"][1:]:
 				pattern_txt += ( "," + item )
 			pattern_txt += "\""
-			row_data = ( pattern_txt + "," + str( pattern["support"] ) + "," + str( pattern["potential"] ) + "\n")
+			row_data = pattern_txt + "," + str( pattern["support"] )
+			
+			for v in other_vehicle_list:
+				row_data += "," + str( pattern[v] )
+			row_data += "\n"
 			output_csv.write(row_data)		
 		output_csv.close()
 	
