@@ -4,7 +4,6 @@ import os
 import codecs
 import json
 import sys
-import urllib2
 
 # MAX_ROW = 8870
 MAX_ROW = 0
@@ -13,7 +12,7 @@ if __name__ == "__main__":
 
 	print "start traffic_mining"
 	
-	output_name = "./traffic_data/trafic_data_intersection.json"
+	output_name = "./traffic_data/trafic_data_intersection_detail.json"
 	h22 = codecs.open("traffic_data/h22.csv", "r", "utf-8")
 	h23 = codecs.open("traffic_data/h23.csv", "r", "utf-8")
 	h24 = codecs.open("traffic_data/h24.csv", "r", "utf-8")
@@ -155,34 +154,27 @@ if __name__ == "__main__":
 		# 夜遅く 21-23時
 		hour = int(time1[0].strip())
 		timezone = ""
-		if(hour >= 0 and hour <= 5):
-			timezone = u"0-5"
-		elif(hour >= 6 and hour <= 11):
-			timezone = u"6-11"
-		elif(hour >= 12 and hour <= 17):
-			timezone = u"12-17"
-		elif(hour >= 18 and hour <= 23):
-			timezone = u"18-23"
+		if(hour >= 0 and hour <= 2):
+			timezone = u"未明"
+		elif(hour >= 3 and hour <= 5):
+			timezone = u"明け方"
+		elif(hour >= 6 and hour <= 8):
+			timezone = u"朝"
+		elif(hour >= 9 and hour <= 11):
+			timezone = u"昼前"
+		elif(hour >= 12 and hour <= 14):
+			timezone = u"昼過ぎ"
+		elif(hour >= 15 and hour <= 17):
+			timezone = u"夕方"
+		elif(hour >= 18 and hour <= 20):
+			timezone = u"夜の初め頃"
+		elif(hour >= 21 and hour <= 23):
+			timezone = u"夜遅く"
 			
 		item_list.append( key + u"_時間帯" + u":" + timezone )
 		
-		daytype = ""
-		year = int(time0[0].strip())
-		month = int(time0[1].strip())
-		day = int(time0[2].strip())
-		
-		date = "{0}{1:0>2}{2:0>2}".format(year, month, day) 
-		
-		response = urllib2.urlopen("http://s-proj.com/utils/checkHoliday.php?kind=h&date=" + date)
-		isHoliday = response.read()
-		
-		if(isHoliday == "holiday"):
-			item_list.append( key + u":" + u"休日" )
-		elif(isHoliday == "else"):
-			item_list.append( key + u":" + u"平日" )
-		else:
-			print "error - ",isHoliday
-			exit()
+		key = u"曜日"
+		item_list.append( key + u":" + data[key] )
 		
 		'''
 		key = u"天候"
