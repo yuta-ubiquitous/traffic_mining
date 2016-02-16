@@ -13,13 +13,13 @@ if __name__ == "__main__":
 	print "*** mining-intersection.py ***"
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
-	file_name = "trafic_data_intersection"
+	file_name = "trafic_data_intersection_detail"
 	minsup = 0.2
-	minconf = 0.5
+	minconf = 0.75
 	minaccidents = 10
 	
 	input_file = "./traffic_data/" + file_name + ".json"
-	output_file = u"./traffic_data/intersection/0-全ての交差点"
+	output_file = u"./traffic_data/" + file_name + u"/0-全ての交差点"
 	
 	f = codecs.open(input_file,"r","utf-8")
 	data = json.load(f)
@@ -53,11 +53,11 @@ if __name__ == "__main__":
 		# start apriori
 		result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True, log=False)	
 	
-		output_json = codecs.open("./traffic_data/intersection/" + intersection_name + ".json", "w", "utf-8")
+		output_json = codecs.open("./traffic_data/" + file_name + "/" + intersection_name + ".json", "w", "utf-8")
 		json.dump(result, output_json, indent = 4, ensure_ascii = False)
 		output_json.close()
 		
-		output_csv = codecs.open("./traffic_data/intersection/" + intersection_name + ".csv", "w", "shift-jis")
+		output_csv = codecs.open("./traffic_data/" + file_name + "/" + intersection_name + ".csv", "w", "shift-jis")
 		
 		header_txt = "\"" + str(accident_count) + " accident, " +str( len(result) ) + " rules, minsup=" + str( minsup ) + ",minconf=" + str(minconf) + "\"\n"
 		output_csv.write(header_txt)

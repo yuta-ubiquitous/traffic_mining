@@ -10,7 +10,7 @@ MAX_ROW = 0
 
 if __name__ == "__main__":
 
-	print "start traffic_mining"
+	print "*** preprocess-intersection-detail.py ***"
 	
 	output_name = "./traffic_data/trafic_data_intersection_detail.json"
 	h22 = codecs.open("traffic_data/h22.csv", "r", "utf-8")
