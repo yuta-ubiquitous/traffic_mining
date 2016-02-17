@@ -92,6 +92,10 @@ if __name__ == "__main__":
 		
 		key = u"年齢_１当"
 		age = int( data[key] )
+		
+		item_dict["age"] = str( int( data[key] ) / 10 * 10 ) + u"歳代"
+		
+		'''
 		if( age < 30 ):
 			item_dict["age"] = u"0-29"
 		elif( age < 50 ):
@@ -103,6 +107,7 @@ if __name__ == "__main__":
 		else:
 			print "error"
 			exit()
+		'''
 		
 		'''
 		key = u"年齢_１当"
@@ -111,15 +116,13 @@ if __name__ == "__main__":
 		key = u"年齢_２当"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + str( int( data[key] ) / 10 * 10 ) + u"歳代" )
+		'''
 		
 		key = u"当事者種_1"
-		for item in data[key].split(u"　"):
-			item_list.append( key + u":" + item )
+		item_list.append( key + u":" + data[key] )
 		
 		key = u"当事者種_2"
-		for item in data[key].split(u"　"):
-			item_list.append( key + u":" + item )
-		'''
+		item_list.append( key + u":" + data[key] )
 		
 		key = u"法令違反_1"
 		item_list.append( key + u":" + data[key] )
@@ -138,7 +141,6 @@ if __name__ == "__main__":
 		item = data[key].split(u" ")
 		time0 = item[0].split(u"/")
 		
-		'''
 		# item_list.append( key + u"_年" + u":" + time0[0] )
 		# 気象庁による区分
 		# 春 3-5月  
@@ -156,7 +158,6 @@ if __name__ == "__main__":
 		elif(month == 12 or month <= 2):
 			season = u"冬"		
 		item_list.append( key + u"_季節" + u":" + season )
-		'''
 		
 		# 時:分
 		time1 = item[1].split(u":")
@@ -205,10 +206,13 @@ if __name__ == "__main__":
 		key = u"道路線形"
 		item_list.append( key + u":" + data[key] )
 		
+		'''
+		
 		key = u"衝突地点"
 		for item in data[key].split(u"・"):
 			item_list.append( key + u":" + item )
 		
+		'''
 		key = u"中央分離帯"
 		item_list.append( key + u":" + data[key] )
 		
@@ -216,9 +220,11 @@ if __name__ == "__main__":
 		for item in data[key].split(u"　"):
 			item_list.append( key + u":" + item )
 		
+		'''
 		key = u"危険速度_1"
 		item_list.append( key + u":" + data[key] )
 		
+		'''
 		key = u"危険速度_2"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )
@@ -240,15 +246,17 @@ if __name__ == "__main__":
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			for item in data[key].split(u"　"):
 				item_list.append( key + u":" + item )
+		'''
 		
 		key = u"行動類型_１当"
-		for item in data[key].split(u"・"):
-			item_list.append( key + u":" + item )
+		item_list.append( key + u":" + item )
+		
 		
 		key = u"行動類型_２当"
 		if( data[u"事故類型_１"] == u"車両相互" ):
-			for item in data[key].split(u"・"):
-				item_list.append( key + u":" + item )
+			item_list.append( key + u":" + item )
+		
+		'''
 		
 		key = u"車両損壊_１当"
 		item_list.append( key + u":" + data[key] )

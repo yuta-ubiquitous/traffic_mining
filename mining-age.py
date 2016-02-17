@@ -14,7 +14,7 @@ if __name__ == "__main__":
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
 	file_name = "trafic_data_age"
-	minsup = 0.05
+	minsup = 0.20
 	
 	input_file = "./traffic_data/" + file_name + ".json"
 	output_path = "./traffic_data/age/"
@@ -26,6 +26,7 @@ if __name__ == "__main__":
 	age_set = set()
 	for T in data:
 		age_set.add(T[u"age"])
+	age_set = sorted(age_set)
 	
 	T_dict = {}
 	for age in age_set:
