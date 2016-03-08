@@ -85,6 +85,48 @@ if __name__ == "__main__":
 			output_csv.write(row_data)		
 		output_csv.close()
 	
+	# all patterns
+	output_all = "./traffic_data/bicycle/all.csv"
+	
+	pattern_set = set()
+	for vehicle in vehicle_set:
+		for pattern in result_dict[vehicle]:
+			pattern_set.add(pattern["pattern"])
+	
+	print "output " + output_all
+	output_csv = codecs.open(output_all, "w", "shift-jis")
+	
+	header_txt = u"patterns,length"
+	for vehicle in vehicle_set:
+		header_txt += u"," + vehicle + u"-support"
+	header_txt += "\n"
+	output_csv.write(header_txt)
+	
+	for pattern in pattern_set:
+		pattern_txt = ""
+		pattern_txt += "\"" + pattern[0]
+		for item in pattern[1:]:
+			pattern_txt += ( "," + item )
+		pattern_txt += "\""
+		output_csv.write(pattern_txt)
+		
+		length_txt = "," + str( len( pattern ) )
+		output_csv.write(length_txt)
+		
+		for vehicle in vehicle_set:
+			counter = 0
+			for v_pattern in T_dict[vehicle]:
+				equal_counter = 0
+				for item in pattern:
+					if(item in v_pattern):
+						equal_counter += 1
+				
+				if( equal_counter == len(pattern) ):
+					counter += 1
+			output_csv.write( "," + str( float(counter) / float( len(T_dict[vehicle]) ) ) )
+		output_csv.write("\n")
+	output_csv.close()
+
 	# end process
 	end_t = datetime.now()
 	between_t = end_t - start_t

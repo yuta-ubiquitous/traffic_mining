@@ -220,11 +220,6 @@ if __name__ == "__main__":
 		for item in data[key].split(u"　"):
 			item_list.append( key + u":" + item )
 		
-		'''
-		key = u"危険速度_1"
-		item_list.append( key + u":" + data[key] )
-		
-		'''
 		key = u"危険速度_2"
 		if( data[u"事故類型_１"] == u"車両相互" ):
 			item_list.append( key + u":" + data[key] )

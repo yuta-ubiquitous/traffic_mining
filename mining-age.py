@@ -114,24 +114,43 @@ if __name__ == "__main__":
 	output_csv = codecs.open(path +  ".csv", "w", "shift-jis")
 	
 	row_txt = u"patterns"
+	row_txt += u",length"
 	for age in age_set:
 		row_txt += "," + u"support_" + age
 	row_txt += "\n"
 	output_csv.write(row_txt)
 	
 	for pattern in pattern_dict:
-		pattern_txt = ""
-		pattern_txt += "\"" + pattern["pattern"][0]
+		pattern_txt = "\""
+		pattern_txt += pattern["pattern"][0]
 		for item in pattern["pattern"][1:]:
 			pattern_txt += ( "," + item )
 		pattern_txt += "\""
 		row_data = pattern_txt
 		
+		row_data += "," + str( len( pattern["pattern"] ) )
+		
 		for age in age_set:
 			support = pattern[age]
-			row_data += "," + str( support )
+			if(support == 0.0):
+				counter = 0
+				for age_pattern in T_dict[age]:
+					isEqual = False
+					equal_count = 0
+					for item in pattern["pattern"]:
+						if(item in age_pattern): 
+							equal_count += 1
+					
+					if( equal_count == len( pattern["pattern"] ) ):
+						isEqual = True
+					
+					if(isEqual):
+						counter += 1
+				row_data += "," + str( float(counter) / float( len(T_dict[age]) )  )
+			else :
+				row_data += "," + str( support )
 		row_data += "\n"
-		output_csv.write(row_data)		
+		output_csv.write(row_data)
 	output_csv.close()
 	
 	# end process

@@ -13,7 +13,7 @@ if __name__ == "__main__":
 	print "*** mining-intersection.py ***"
 	print("-- start | " + start_t.strftime("%Y-%m-%dT%H:%M:%SZ") + " --")
 	
-	file_name = "trafic_data_intersection_detail"
+	file_name = "trafic_data_intersection"
 	minsup = 0.2
 	minconf = 0.75
 	minaccidents = 10
