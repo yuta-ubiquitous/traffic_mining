@@ -56,6 +56,7 @@ if __name__ == "__main__":
 					pattern[com_age] = 99999
 		
 		path = output_path + u"年齢" + age
+		'''
 		print "writing " + age + " data json"
 		output_json = codecs.open(path + ".json","w","utf-8")
 		json.dump(result_dict[age], output_json, indent = 4, ensure_ascii = False)
@@ -85,6 +86,7 @@ if __name__ == "__main__":
 			row_data += "\n"
 			output_csv.write(row_data)		
 		output_csv.close()
+		'''
 		
 	# all
 	pattern_set = set()

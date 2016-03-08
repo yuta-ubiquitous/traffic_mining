@@ -19,7 +19,14 @@ if __name__ == "__main__":
 	minaccidents = 10
 	
 	input_file = "./traffic_data/" + file_name + ".json"
-	output_file = u"./traffic_data/" + file_name + u"/0-全ての交差点"
+	output_file = u"./traffic_data/" + file_name + u"/全ての交差点"
+	
+	item_relation = {
+		u"発生時分_季節":[u"発生時分_時間帯",u"発生時分",u"曜日"],
+		u"発生時分_時間帯":[],
+		u"発生時分":[u"発生時分_時間帯"],
+		u"曜日":[u"発生時分_時間帯"]
+	}
 	
 	f = codecs.open(input_file,"r","utf-8")
 	data = json.load(f)
@@ -53,6 +60,7 @@ if __name__ == "__main__":
 		# start apriori
 		result = apriori(item_data, minsup=minsup, minconf=minconf, liftcut=True, log=False)	
 	
+		'''
 		output_json = codecs.open("./traffic_data/" + file_name + "/" + intersection_name + ".json", "w", "utf-8")
 		json.dump(result, output_json, indent = 4, ensure_ascii = False)
 		output_json.close()
@@ -81,12 +89,32 @@ if __name__ == "__main__":
 			row_data = ( X_txt + "," + Y_txt + "," + str(row["support"]) + "," + str(row["confidence"]) + "," + str(row["lift"]) + "\n")
 			output_csv.write(row_data)
 		output_csv.close()
+		'''
 		
 		for row in result:
-			row["intersection"] = intersection_name
-			row["number of transaction"] = accident_count * row["support"]
-			row["number of accidents"] = accident_count
-			all_rule_list.append(row)
+			
+			"発生時分_季節:冬", 
+			"発生時分_時間帯:6-11", 
+			"発生時分:平日"
+			
+			"発生時分_季節:夏", 
+			"発生時分_時間帯:朝", 
+			"曜日:金"
+			
+			isNotMatch = False
+			for _ in row["Y"]:
+				y = _.split(":")[0]
+				for ry in item_relation[y]:
+					for __ in row["X"]:
+						x = __.split(":")[0]
+						if(ry == x):
+							isNotMatch = True
+			
+			if(not isNotMatch):
+				row["intersection"] = intersection_name
+				row["number of transaction"] = accident_count * row["support"]
+				row["number of accidents"] = accident_count
+				all_rule_list.append(row)
 	
 	print "writing data json"
 	all_output_json = codecs.open(output_file + ".json","w","utf-8")
